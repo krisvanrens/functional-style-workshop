@@ -14,6 +14,6 @@ Functional-style C++ session workshop notes.
 * Exercise 3c: [code link](https://www.godbolt.org/z/h6TvMxzj7) ([solution](https://www.godbolt.org/z/GvxTzG7so))
 * Exercise 4a: [code link](https://www.godbolt.org/z/dcsq5W5oj) ([solution](https://www.godbolt.org/z/j5TWcdxen))
 * Exercise 4b: [code link](https://www.godbolt.org/z/nn9sbjn16) ([solution](https://www.godbolt.org/z/eGPfhzvdv))
-* Exercise 4 final result: [code link](https://www.godbolt.org/z/5hzs1Yd53)
+* Exercise 4 final result: [code link](https://www.godbolt.org/z/aYoaxx6ns)
 
 Good luck and have fun! 😀

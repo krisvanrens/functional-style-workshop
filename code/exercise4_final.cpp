@@ -3,7 +3,8 @@
 #include <iostream>
 #include <string>
 #include <utility>
-#include <vector>
+
+#include <range/v3/view/transform.hpp>
 
 template<typename T>
 class Maybe {
@@ -61,7 +62,50 @@ std::function<std::string(bool)> to_string = [](bool x) {
   return (x ? "true" : "false");
 };
 
-// TODO: Implement map().
+template<typename A, typename B>
+Maybe<B> map(std::function<B(A)> f, Maybe<A> x) {
+  return (x.is_just() ? Maybe<B>(f(x.value())) // Just(f(x)).
+                      : Maybe<B>{});           // Nothing.
+}
+
+template<typename A, typename B>
+std::function<Maybe<B>(Maybe<A>)> map_curried(std::function<B(A)> f) {
+  return [f](Maybe<A> x) {
+    return (x.is_just() ? Maybe<B>(f(x.value())) // Just(f(x)).
+                        : Maybe<B>{});           // Nothing.
+  };
+}
+
+template <typename T>
+class MaybeRange : public ranges::view_facade<MaybeRange<T>> {
+  friend ranges::range_access;
+
+  const T* m_ptr_;
+
+  const T& read() const {
+    return *m_ptr_;
+  }
+
+  bool equal(ranges::default_sentinel_t) const {
+    return m_ptr_ == nullptr;
+  }
+
+  void next() {
+    m_ptr_ = nullptr;
+  }
+
+public:
+  MaybeRange() = default;
+
+  explicit MaybeRange(const Maybe<T> &m)
+    : m_ptr_{m.is_just() ? &m.value() : nullptr} {
+  }
+};
+
+template<typename T>
+MaybeRange<T> as_range(const Maybe<T> &m) {
+  return MaybeRange<T>{m};
+}
 
 int main() {
   Maybe<std::string> input1{"Functional-style C++"};
@@ -81,4 +125,16 @@ int main() {
 
   std::cout << map(to_string, map(is_even, map(length, input1))) << ", "
             << map(to_string, map(is_even, map(length, input2))) << '\n';
+
+  using namespace ranges;
+
+  auto output1 = as_range(input1) | views::transform(length)
+                                  | views::transform(is_even);
+
+  std::cout << input1 << " --> " << std::boolalpha << output1 << '\n';
+
+  auto output2 = as_range(input2) | views::transform(length)
+                                  | views::transform(is_even);
+
+  std::cout << input2 << " --> " << std::boolalpha << output2 << '\n';
 }
