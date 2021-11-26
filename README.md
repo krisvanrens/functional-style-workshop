@@ -1,4 +1,4 @@
-# functional-style-workshop
+# Functional-style C++ workshop
 Functional-style C++ session workshop notes.
 
 # Exercise code links
